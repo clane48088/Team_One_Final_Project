@@ -11,3 +11,4 @@ For columns included, the first two neural networks dropped the identifying data
 The third neural network was created to see what the impact would be if the symptoms were removed, so that the model could also be used for those without observed symptoms. The third neural network removed columns "_id", "PatientID", "DoctorInCharge", "Confusion", "Disorientation", "PersonalityChanges", "DifficultyCompetingTasks", and "Forgetfulness". Since the all-sigmoid neural network performed better than the all-relu neural network, the activations for the third network were all sigmoid. The third model achieved an accuracy of 85.6%.
 ## Data Source 
 - Data was retrived from Kaggle: https://www.kaggle.com/datasets/rabieelkharoua/alzheimers-disease-dataset , https://www.kaggle.com/code/edumisvieramartin/alzheimers-prediction-neural-networks
+- Imported into Mongual database
