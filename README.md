@@ -9,6 +9,18 @@ We aim to develop a predictive model to identify individuals at risk of developi
 For the first neural network tests, three models were created to process the data. All three had the same structure: 4 hidden layers with 160 nodes on Layer 1, 80 nodes on Layer 2, 40 Nodes on Layer 3, and 20 Nodes on Layer 4.
 For columns included, the first two neural networks dropped the identifying data: "_id", "PatientID", and "DoctorInCharge". The first neural network had sigmoid activation on each layer of the neural network, and achieved an 86.99% accuracy. The second neural network had relu activation on all layers except the final layer (sigmoid being necessary here for a binary output), and achieved an 81.97% accuracy.
 The third neural network was created to see what the impact would be if the symptoms were removed, so that the model could also be used for those without observed symptoms. The third neural network removed columns "_id", "PatientID", "DoctorInCharge", "Confusion", "Disorientation", "PersonalityChanges", "DifficultyCompetingTasks", and "Forgetfulness". Since the all-sigmoid neural network performed better than the all-relu neural network, the activations for the third network were all sigmoid. The third model achieved an accuracy of 85.6%.
+
+**Logistic Regression Model:**
+For the Logistic regression model, the data set was plotted using hv plot and we dropped the "_id", "PatientID", and "DoctorInCharge" and created a new data frame. Then we used .valuecount() to see the counts for the "Diagnosis". The data was then split using train, test, split. Then we scaled the data using standardscaler. We then made the logistic Regression model. The model was then scored against the training data. When the model was ran with the testing data model it received a Testing Score: 0.81. We then showed the predicted data vx. the actual data. The model had an 81.23% accuracy.  The following is the logistic regression model's classification report.
+                  precision    recall  f1-score   support
+
+           0       0.83      0.89      0.86       348
+           1       0.77      0.67      0.72       190
+
+    accuracy                           0.81       538
+   macro avg       0.80      0.78      0.79       538
+weighted avg       0.81      0.81      0.81       538
+
 ## Data Source 
 - Data was retrived from Kaggle: https://www.kaggle.com/datasets/rabieelkharoua/alzheimers-disease-dataset , https://www.kaggle.com/code/edumisvieramartin/alzheimers-prediction-neural-networks
 - Imported into Mongual database
