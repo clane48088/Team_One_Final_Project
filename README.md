@@ -9,6 +9,7 @@ We aim to develop a predictive model to identify individuals at risk of developi
 For the first neural network tests, three models were created to process the data. All three had the same structure: 4 hidden layers with 160 nodes on Layer 1, 80 nodes on Layer 2, 40 Nodes on Layer 3, and 20 Nodes on Layer 4.
 For columns included, the first two neural networks dropped the identifying data: "_id", "PatientID", and "DoctorInCharge". The first neural network had sigmoid activation on each layer of the neural network, and achieved an 86.99% accuracy. The second neural network had relu activation on all layers except the final layer (sigmoid being necessary here for a binary output), and achieved an 81.97% accuracy.
 The third neural network was created to see what the impact would be if the symptoms were removed, so that the model could also be used for those without observed symptoms. The third neural network removed columns "_id", "PatientID", "DoctorInCharge", "Confusion", "Disorientation", "PersonalityChanges", "DifficultyCompetingTasks", and "Forgetfulness". Since the all-sigmoid neural network performed better than the all-relu neural network, the activations for the third network were all sigmoid. The third model achieved an accuracy of 85.6%.
+  
   **Contributors:** Molly Pfefferkorn, Jan Lelie, Jim Cruz, Curtis McMullen, Grecia Lopez
 
 **Logistic Regression Model:**
@@ -21,6 +22,7 @@ For the Logistic regression model, the data set was plotted using hv plot and we
     accuracy                           0.81       538
    macro avg       0.80      0.78      0.79       538
 weighted avg       0.81      0.81      0.81       538
+
  **Contributors:** Rumani Kafle, lorelei Legg
 
 **Random Forest Classifier:**
@@ -30,6 +32,7 @@ We also experimented with removal of Medical History factors and demographic det
 We experimented with the number of estimators used in the modeling to increase the accuracy but found that above an estimator number of 200, there was little to no significant increase in the accuracy.
 The model was executed with various iterations in order to check the  accuracy and we able to come up with 3 different results:
 90%, 91%, 93.1% (final and highest)
+ 
  **Contributors:** Chris Lane, Alison Driscoll, William Fetter, Atnaf Ayalew
 
 
