@@ -21,6 +21,17 @@ For the Logistic regression model, the data set was plotted using hv plot and we
    macro avg       0.80      0.78      0.79       538
 weighted avg       0.81      0.81      0.81       538
 
+**Random Forest Classifier:**
+A Random Forest classifier is a machine learning algorithm that uses an ensemble of decision trees to make predictions, combining the predictions of multiple trees to improve accuracy and reduce overfitting. 
+We initially dropped the following columns: “_id”, “DoctorInCharge”, “PatientID”, “BMI”, and “Gender”. 
+We also experimented with removal of Medical History factors and demographic details, however none had a positive effect when removed except Gender.
+Experimented with the number of estimators used in the modeling to increase the accuracy but found that above an estimator number of 200, there was little to no significant increase in the accuracy.
+Executed the model with various iterations in order to check the  accuracy and we able to come up with 3 different results:
+90%
+91%
+93.1% (final and highest)
+
+
 ## Data Source 
 - Data was retrived from Kaggle: https://www.kaggle.com/datasets/rabieelkharoua/alzheimers-disease-dataset , https://www.kaggle.com/code/edumisvieramartin/alzheimers-prediction-neural-networks
 - Imported into Mongual database
