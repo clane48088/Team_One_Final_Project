@@ -25,8 +25,8 @@ weighted avg       0.81      0.81      0.81       538
 A Random Forest classifier is a machine learning algorithm that uses an ensemble of decision trees to make predictions, combining the predictions of multiple trees to improve accuracy and reduce overfitting. 
 We initially dropped the following columns: “_id”, “DoctorInCharge”, “PatientID”, “BMI”, and “Gender”. 
 We also experimented with removal of Medical History factors and demographic details, however none had a positive effect when removed except Gender.
-Experimented with the number of estimators used in the modeling to increase the accuracy but found that above an estimator number of 200, there was little to no significant increase in the accuracy.
-Executed the model with various iterations in order to check the  accuracy and we able to come up with 3 different results:
+We experimented with the number of estimators used in the modeling to increase the accuracy but found that above an estimator number of 200, there was little to no significant increase in the accuracy.
+The model was executed with various iterations in order to check the  accuracy and we able to come up with 3 different results:
 90%, 91%, 93.1% (final and highest)
 
 
