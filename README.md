@@ -80,6 +80,8 @@ Performance Metrics
 -Test Accuracy: 82.33%
 
 These results demonstrate that our model can effectively identify patterns in this limited dataset, achieving strong predictive performance for the target disease. The consistent performance between validation and test sets suggests good generalization capabilities despite the dataset constraints.
+
  **Contributors:** Jan Lelie
 
+**Conclusion
 
