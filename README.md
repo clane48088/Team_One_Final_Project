@@ -1,3 +1,4 @@
+
 # Team_One_Final_Project
 ## Introduction 
 We aim to develop a predictive model to identify individuals at risk of developing Alzheimer’s Disease (AD) based on a variety of demographic, medical, and behavioral indicators. By leveraging existing datasets containing features such as age, gender, medical history, cognitive assessments, and other biomarkers, we seek to build a model capable of forecasting the likelihood of AD development. Our goal is to achieve an accuracy threshold of 75%, which will serve as a benchmark for the model's effectiveness in making reliable predictions.
@@ -83,5 +84,19 @@ These results demonstrate that our model can effectively identify patterns in th
 
  **Contributors:** Jan Lelie
 
-**Conclusion
+##Conclusion
+Our project successfully developed multiple predictive models for identifying individuals at risk of developing Alzheimer's Disease, exceeding our initial accuracy threshold of 75%. Through rigorous testing and optimization of different machine learning approaches, we were able to achieve impressive performance metrics:
+  
+ - Neural Network Models: Our initial neural network achieved 86.99% accuracy with sigmoid activation functions. Even when excluding symptom-related features, the model maintained a strong 85.6% accuracy, demonstrating robust predictive capability based on demographic and medical history data alone.
+ - Logistic Regression Model: This model delivered consistent performance with 84% accuracy on testing data, providing good balance between precision and recall for both positive and negative cases.
+  
+ - Random Forest Classifier: Our most successful model achieved 93.1% accuracy after multiple iterations and optimization, proving particularly effective at     identifying patterns in the complex relationships between risk factors.
+ - Hyperparameter Optimization: The automated search using Keras Tuner identified an optimal neural network architecture with 5 hidden layers and ReLU activation, achieving 82.33% test accuracy and demonstrating good generalization capabilities.
 
+The high accuracy across different modeling techniques suggests that our approach is robust and could be valuable for clinical applications. Notably, our models maintained strong performance even when relying solely on pre-symptomatic indicators, which is particularly promising for early intervention strategies.
+
+Future work could focus on:
+
+1.  Validating these models with larger, more diverse datasets
+2.  Incorporating additional biomarkers as they become available
+3.  Developing an accessible interface for healthcare providers to utilize these predictive tools
