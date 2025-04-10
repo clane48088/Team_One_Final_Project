@@ -1,11 +1,23 @@
 # Team_One_Final_Project
-## Indroduction 
+## Introduction 
 We aim to develop a predictive model to identify individuals at risk of developing Alzheimer’s Disease (AD) based on a variety of demographic, medical, and behavioral indicators. By leveraging existing datasets containing features such as age, gender, medical history, cognitive assessments, and other biomarkers, we seek to build a model capable of forecasting the likelihood of AD development. Our goal is to achieve an accuracy threshold of 75%, which will serve as a benchmark for the model's effectiveness in making reliable predictions.
 ## Research Questions
 1. The likelihood an individual may develop Alzheimer’s disease based on demographics?
 
+## Data Source 
+- Data was retrived from Kaggle: https://www.kaggle.com/datasets/rabieelkharoua/alzheimers-disease-dataset , https://www.kaggle.com/code/edumisvieramartin/alzheimers-prediction-neural-networks
+- Imported into MongoDB
+- code to run in googe colab
+- !pip install -q pymongo pandas
+from pymongo import MongoClient  
+uri = "mongodb+srv://group_1:1234567890@cluster0.0kxynkc.mongodb.net/"
+client = MongoClient(uri)  
+db = client["final_project"]
+
 ## Dataset Overview
+We identified the data in a tableau format to view basic overview and trends in the data prior to predicitng. The dashboard can be found at
 https://public.tableau.com/app/profile/sunil.williams/viz/ALZbreakdownv2/Dashboard12
+
 **Neural Network Model Testing:**
 For the first neural network tests, three models were created to process the data. All three had the same structure: 4 hidden layers with 160 nodes on Layer 1, 80 nodes on Layer 2, 40 Nodes on Layer 3, and 20 Nodes on Layer 4.
 For columns included, the first two neural networks dropped the identifying data: "_id", "PatientID", and "DoctorInCharge". The first neural network had sigmoid activation on each layer of the neural network, and achieved an 86.99% accuracy. The second neural network had relu activation on all layers except the final layer (sigmoid being necessary here for a binary output), and achieved an 81.97% accuracy.
@@ -35,8 +47,26 @@ The model was executed with various iterations in order to check the  accuracy a
 90%, 91%, 93.1% (final and highest)
  
  **Contributors:** Chris Lane, Alison Driscoll, William Fetter, Atnaf Ayalew
+ 
+**Optimization Study using Keras Tuner with the Hyperband algorithm**
+Our automated hyperparameter search successfully identified the optimal neural network architecture for this disease prediction task. The Hyperband algorithm efficiently explored the hyperparameter space to discover the following configuration:
+Optimal Architecture
+
+Activation Function: ReLU
+Network Depth: 5 hidden layers
+Neuron Distribution:
+
+First layer: 80 neurons
+Second layer: 32 neurons
+Third layer: 80 neurons
+Fourth layer: 80 neurons
+Fifth layer: 96 neurons
+
+Performance Metrics
+Validation Accuracy: 84.59%
+Test Accuracy: 82.33%
+
+These results demonstrate that our model can effectively identify patterns in this limited dataset, achieving strong predictive performance for the target disease. The consistent performance between validation and test sets suggests good generalization capabilities despite the dataset constraints.
+ **Contributors:** Jan Lelie
 
 
-## Data Source 
-- Data was retrived from Kaggle: https://www.kaggle.com/datasets/rabieelkharoua/alzheimers-disease-dataset , https://www.kaggle.com/code/edumisvieramartin/alzheimers-prediction-neural-networks
-- Imported into Mongual database
