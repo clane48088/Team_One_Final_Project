@@ -28,17 +28,28 @@ The third neural network was created to see what the impact would be if the symp
   **Contributors:** Molly Pfefferkorn, Jim Cruz, Curtis McMullen, Grecia Lopez
 
 **Logistic Regression Model:**
-For the Logistic regression model, the data set was plotted using hv plot and we dropped the "_id", "PatientID", and "DoctorInCharge" and created a new data frame. Then we used .valuecount() to see the counts for the "Diagnosis". The data was then split using train, test, split. Then we scaled the data using standardscaler. We then made the logistic Regression model. The model was then scored against the training data. When the model was ran with the testing data model it received a Testing Score: 0.81. We then showed the predicted data vx. the actual data. The model had an 81.23% accuracy.  The following is the logistic regression model's classification report.
-                  precision    recall  f1-score   support
+For the Logistic regression model,the initial dataset was plotted using hv plot to determine any unwanted columns. From this, we were able to drop the "_id", "PatientID", and "DoctorInCharge" columns to create a new data frame for further analysis. The new dataset was then split using train, test, split and all features were standardized using StandardScaler. A logistic regression model was trained on the scaled training data and evaluated on both the training and testing sets. These were the results for further evaluation... 
+  __Training Score:__ 85%
+  __Testing Score:__ 84%
+  __Accuracy Score:__ 84%
+  __Confusion Matrix:__ array([[306,  42],
+                         [ 46, 144]])
 
-           0       0.83      0.89      0.86       348
-           1       0.77      0.67      0.72       190
+  __Classification Report:__
+  
+                 precision    recall  f1-score   support
 
-    accuracy                           0.81       538
-   macro avg       0.80      0.78      0.79       538
-weighted avg       0.81      0.81      0.81       538
+           0       0.87      0.88      0.87       348
+           1       0.77      0.76      0.77       190
 
- **Contributors:** Rumani Kafle, lorelei Legg
+    accuracy                           0.84       538
+   macro avg       0.82      0.82      0.82       538
+weighted avg       0.84      0.84      0.84       538
+
+__Note on PCA:__
+Principal Component Analysis (PCA) was applied to reduce dimensionality and visualize the distribution of the two diagnosis classes in a separate colab file that otherwise followed the same steps as above. The goal was to check for clear visual separation between patients with and without Alzheimer's. However, the PCA-based scatter plot showed significant overlap between classes with no distinct clusters, and model accuracy dropped by ~10%. As a result, PCA was not used in the final model to maintain predictive performance.
+
+ **Contributors:** Rumani Kafle, Lorelei Legg
 
 **Random Forest Classifier:**
 A Random Forest classifier is a machine learning algorithm that uses an ensemble of decision trees to make predictions, combining the predictions of multiple trees to improve accuracy and reduce overfitting. 
