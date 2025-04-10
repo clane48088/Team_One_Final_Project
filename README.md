@@ -7,7 +7,7 @@ We aim to develop a predictive model to identify individuals at risk of developi
 ## Data Source 
 - Data was retrived from Kaggle: https://www.kaggle.com/datasets/rabieelkharoua/alzheimers-disease-dataset , https://www.kaggle.com/code/edumisvieramartin/alzheimers-prediction-neural-networks
 - Imported into MongoDB
-- code to run in googe colab
+- code to connect to environment in googe colab
 - !pip install -q pymongo pandas
 from pymongo import MongoClient  
 uri = "mongodb+srv://group_1:1234567890@cluster0.0kxynkc.mongodb.net/"
@@ -23,7 +23,7 @@ For the first neural network tests, three models were created to process the dat
 For columns included, the first two neural networks dropped the identifying data: "_id", "PatientID", and "DoctorInCharge". The first neural network had sigmoid activation on each layer of the neural network, and achieved an 86.99% accuracy. The second neural network had relu activation on all layers except the final layer (sigmoid being necessary here for a binary output), and achieved an 81.97% accuracy.
 The third neural network was created to see what the impact would be if the symptoms were removed, so that the model could also be used for those without observed symptoms. The third neural network removed columns "_id", "PatientID", "DoctorInCharge", "Confusion", "Disorientation", "PersonalityChanges", "DifficultyCompetingTasks", and "Forgetfulness". Since the all-sigmoid neural network performed better than the all-relu neural network, the activations for the third network were all sigmoid. The third model achieved an accuracy of 85.6%.
   
-  **Contributors:** Molly Pfefferkorn, Jan Lelie, Jim Cruz, Curtis McMullen, Grecia Lopez
+  **Contributors:** Molly Pfefferkorn, Jim Cruz, Curtis McMullen, Grecia Lopez
 
 **Logistic Regression Model:**
 For the Logistic regression model, the data set was plotted using hv plot and we dropped the "_id", "PatientID", and "DoctorInCharge" and created a new data frame. Then we used .valuecount() to see the counts for the "Diagnosis". The data was then split using train, test, split. Then we scaled the data using standardscaler. We then made the logistic Regression model. The model was then scored against the training data. When the model was ran with the testing data model it received a Testing Score: 0.81. We then showed the predicted data vx. the actual data. The model had an 81.23% accuracy.  The following is the logistic regression model's classification report.
@@ -50,21 +50,21 @@ The model was executed with various iterations in order to check the  accuracy a
  
 **Optimization Study using Keras Tuner with the Hyperband algorithm**
 Our automated hyperparameter search successfully identified the optimal neural network architecture for this disease prediction task. The Hyperband algorithm efficiently explored the hyperparameter space to discover the following configuration:
+
 Optimal Architecture
+-Activation Function: ReLU
+-Network Depth: 5 hidden layers
+-Neuron Distribution:
 
-Activation Function: ReLU
-Network Depth: 5 hidden layers
-Neuron Distribution:
-
-First layer: 80 neurons
-Second layer: 32 neurons
-Third layer: 80 neurons
-Fourth layer: 80 neurons
-Fifth layer: 96 neurons
+-First layer: 80 neurons
+-Second layer: 32 neurons
+-Third layer: 80 neurons
+-Fourth layer: 80 neurons
+-Fifth layer: 96 neurons
 
 Performance Metrics
-Validation Accuracy: 84.59%
-Test Accuracy: 82.33%
+-Validation Accuracy: 84.59%
+-Test Accuracy: 82.33%
 
 These results demonstrate that our model can effectively identify patterns in this limited dataset, achieving strong predictive performance for the target disease. The consistent performance between validation and test sets suggests good generalization capabilities despite the dataset constraints.
  **Contributors:** Jan Lelie
