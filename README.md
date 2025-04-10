@@ -29,24 +29,24 @@ The third neural network was created to see what the impact would be if the symp
 
 **Logistic Regression Model:**
 For the Logistic regression model,the initial dataset was plotted using hv plot to determine any unwanted columns. From this, we were able to drop the "_id", "PatientID", and "DoctorInCharge" columns to create a new data frame for further analysis. The new dataset was then split using train, test, split and all features were standardized using StandardScaler. A logistic regression model was trained on the scaled training data and evaluated on both the training and testing sets. These were the results for further evaluation... 
-  __Training Score:__ 85%
-  __Testing Score:__ 84%
-  __Accuracy Score:__ 84%
-  __Confusion Matrix:__ array([[306,  42],
+  _Training Score:_ 85%
+  _Testing Score:_ 84%
+  _Accuracy Score:_ 84%
+  _Confusion Matrix:_ array([[306,  42],
                          [ 46, 144]])
 
-  __Classification Report:__
-  
-                 precision    recall  f1-score   support
+  _Classification Report:_
 
-           0       0.87      0.88      0.87       348
-           1       0.77      0.76      0.77       190
+| Class        | Precision | Recall | F1-Score | Support |
+|--------------|-----------|--------|----------|---------|
+| 0 (No Alzheimer's) | 0.87      | 0.88   | 0.87     | 348     |
+| 1 (Alzheimer's)    | 0.77      | 0.76   | 0.77     | 190     |
+| **Accuracy**        |           |        | **0.84** | 538     |
+| **Macro Avg**       | 0.82      | 0.82   | 0.82     | 538     |
+| **Weighted Avg**    | 0.84      | 0.84   | 0.84     | 538     |
 
-    accuracy                           0.84       538
-   macro avg       0.82      0.82      0.82       538
-weighted avg       0.84      0.84      0.84       538
 
-__Note on PCA:__
+_Note on PCA:_
 Principal Component Analysis (PCA) was applied to reduce dimensionality and visualize the distribution of the two diagnosis classes in a separate colab file that otherwise followed the same steps as above. The goal was to check for clear visual separation between patients with and without Alzheimer's. However, the PCA-based scatter plot showed significant overlap between classes with no distinct clusters, and model accuracy dropped by ~10%. As a result, PCA was not used in the final model to maintain predictive performance.
 
  **Contributors:** Rumani Kafle, Lorelei Legg
