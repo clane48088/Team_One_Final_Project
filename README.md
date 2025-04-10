@@ -15,8 +15,10 @@ client = MongoClient(uri)
 db = client["final_project"]
 
 ## Dataset Overview
-We identified the data in a tableau format to view basic overview and trends in the data prior to predicitng. The dashboard can be found at
+This visualization structure effectively captures the demographic dimensions of Alzheimer's diagnoses across multiple variables, which provides a solid foundation for identifying at-risk populations and potential patterns in the data before moving to predictive modeling.
 https://public.tableau.com/app/profile/sunil.williams/viz/ALZbreakdownv2/Dashboard12
+
+## Model Overview
 
 **Neural Network Model Testing:**
 For the first neural network tests, three models were created to process the data. All three had the same structure: 4 hidden layers with 160 nodes on Layer 1, 80 nodes on Layer 2, 40 Nodes on Layer 3, and 20 Nodes on Layer 4.
