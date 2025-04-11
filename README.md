@@ -84,7 +84,10 @@ These results demonstrate that our model can effectively identify patterns in th
 
  **Contributors:** Jan Lelie
 
-##Conclusion
+ ## Predictor
+ We added a basic html predictor to identify the prediction of positive disease diagnosis. Double click the html file and then load the data set to train the model. Fill out the forms and click to predict.
+
+## Conclusion
 Our project successfully developed multiple predictive models for identifying individuals at risk of developing Alzheimer's Disease, exceeding our initial accuracy threshold of 75%. Through rigorous testing and optimization of different machine learning approaches, we were able to achieve impressive performance metrics:
   
  - Neural Network Models: Our initial neural network achieved 86.99% accuracy with sigmoid activation functions. Even when excluding symptom-related features, the model maintained a strong 85.6% accuracy, demonstrating robust predictive capability based on demographic and medical history data alone.
