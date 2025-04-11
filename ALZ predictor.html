@@ -1,0 +1,1092 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alzheimer's Risk Predictor</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.js"></script>
+    <style>
+        .loader {
+            border-top-color: #3498db;
+            -webkit-animation: spinner 1.5s linear infinite;
+            animation: spinner 1.5s linear infinite;
+        }
+
+        @-webkit-keyframes spinner {
+            0% { -webkit-transform: rotate(0deg); }
+            100% { -webkit-transform: rotate(360deg); }
+        }
+
+        @keyframes spinner {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div id="app" class="container mx-auto p-4 max-w-4xl">
+        <div id="loading" class="flex items-center justify-center h-screen">
+            <div class="text-center p-8 max-w-lg">
+                <h1 class="text-2xl font-bold mb-4">Loading Alzheimer's Risk Predictor</h1>
+                <p class="mb-4">Please wait while we train the machine learning model...</p>
+                <div class="flex justify-center">
+                    <div class="loader rounded-full h-12 w-12 border-4 border-gray-200"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="file-upload-container" class="hidden">
+            <div id="file-upload-section" class="mb-6 p-4 border border-dashed border-gray-300 rounded-lg">
+              <h2 class="font-bold text-lg mb-2">Upload Alzheimer's Dataset</h2>
+              <p class="text-sm text-gray-600 mb-3">
+                Choose your CSV file containing Alzheimer's disease data.
+              </p>
+              <div class="flex items-center">
+                <label for="csv-file-input" class="flex-1">
+                  <div class="bg-blue-50 hover:bg-blue-100 text-blue-600 font-medium py-2 px-4 rounded border border-blue-200 cursor-pointer text-center">
+                    Choose CSV File
+                  </div>
+                  <input type="file" id="csv-file-input" accept=".csv" class="hidden">
+                </label>
+                <div id="file-name" class="ml-3 text-gray-600">No file chosen</div>
+              </div>
+              <div id="file-upload-status" class="mt-2 text-sm"></div>
+            </div>
+        </div>
+
+        <div id="main-content" class="bg-white rounded-lg shadow-md overflow-hidden hidden">
+            <div class="bg-blue-600 p-6 text-white">
+                <h1 class="text-2xl font-bold">Alzheimer's Disease Risk Predictor</h1>
+                <p class="mt-2">Fill in the form below to get a prediction</p>
+            </div>
+            
+            <div class="p-6">
+                <div class="mb-6">
+                    <p class="text-sm text-gray-600 mb-3">
+                        This tool uses a Random Forest classifier trained on a dataset of 2,149 patient records to predict the risk of Alzheimer's disease based on various health and lifestyle factors.
+                        <br><br>
+                        <strong class="text-red-600">Disclaimer:</strong> This is for educational purposes only. It should not be used for actual medical diagnosis. Always consult with a healthcare professional for proper medical advice.
+                    </p>
+                </div>
+                
+                <form id="prediction-form" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="space-y-4">
+                        <h2 class="font-bold text-lg border-b pb-2">Demographics</h2>
+                        
+                        <div>
+                            <label class="block text-gray-700 mb-1">Age (60-90)</label>
+                            <input 
+                                type="number" 
+                                id="age" 
+                                value="70" 
+                                min="60" 
+                                max="90" 
+                                class="w-full p-2 border rounded" 
+                                required 
+                            >
+                        </div>
+                        
+                        <div>
+                            <label class="block text-gray-700 mb-1">Gender</label>
+                            <select 
+                                id="gender" 
+                                class="w-full p-2 border rounded"
+                            >
+                                <option value="0">Female</option>
+                                <option value="1">Male</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-gray-700 mb-1">Ethnicity</label>
+                            <select 
+                                id="ethnicity" 
+                                class="w-full p-2 border rounded"
+                            >
+                                <option value="0">Caucasian</option>
+                                <option value="1">African American</option>
+                                <option value="2">Hispanic</option>
+                                <option value="3">Other</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-gray-700 mb-1">Education Level</label>
+                            <select 
+                                id="educationLevel" 
+                                class="w-full p-2 border rounded"
+                            >
+                                <option value="0">Less than High School</option>
+                                <option value="1">High School</option>
+                                <option value="2" selected>College</option>
+                                <option value="3">Graduate</option>
+                            </select>
+                        </div>
+                        
+                        <h2 class="font-bold text-lg border-b pb-2 mt-6">Health Metrics</h2>
+                        
+                        <div>
+                            <label class="block text-gray-700 mb-1">BMI (15-40)</label>
+                            <input 
+                                type="number" 
+                                id="bmi" 
+                                value="25" 
+                                min="15" 
+                                max="40" 
+                                step="0.1" 
+                                class="w-full p-2 border rounded" 
+                                required 
+                            >
+                        </div>
+                        
+                        <div>
+                            <label class="block text-gray-700 mb-1">Systolic BP (90-180)</label>
+                            <input 
+                                type="number" 
+                                id="systolicBP" 
+                                value="120" 
+                                min="90" 
+                                max="180" 
+                                class="w-full p-2 border rounded" 
+                                required 
+                            >
+                        </div>
+                        
+                        <div>
+                            <label class="block text-gray-700 mb-1">Diastolic BP (60-120)</label>
+                            <input 
+                                type="number" 
+                                id="diastolicBP" 
+                                value="80" 
+                                min="60" 
+                                max="120" 
+                                class="w-full p-2 border rounded" 
+                                required 
+                            >
+                        </div>
+                        
+                        <div>
+                            <label class="block text-gray-700 mb-1">Total Cholesterol (150-300)</label>
+                            <input 
+                                type="number" 
+                                id="cholesterolTotal" 
+                                value="200" 
+                                min="150" 
+                                max="300" 
+                                class="w-full p-2 border rounded" 
+                                required 
+                            >
+                        </div>
+                        
+                        <div>
+                            <label class="block text-gray-700 mb-1">LDL Cholesterol (50-200)</label>
+                            <input 
+                                type="number" 
+                                id="cholesterolLDL" 
+                                value="100" 
+                                min="50" 
+                                max="200" 
+                                class="w-full p-2 border rounded" 
+                                required 
+                            >
+                        </div>
+                        
+                        <div>
+                            <label class="block text-gray-700 mb-1">HDL Cholesterol (20-100)</label>
+                            <input 
+                                type="number" 
+                                id="cholesterolHDL" 
+                                value="50" 
+                                min="20" 
+                                max="100" 
+                                class="w-full p-2 border rounded" 
+                                required 
+                            >
+                        </div>
+                        
+                        <div>
+                            <label class="block text-gray-700 mb-1">Triglycerides (50-400)</label>
+                            <input 
+                                type="number" 
+                                id="cholesterolTriglycerides" 
+                                value="150" 
+                                min="50" 
+                                max="400" 
+                                class="w-full p-2 border rounded" 
+                                required 
+                            >
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <h2 class="font-bold text-lg border-b pb-2">Lifestyle Factors</h2>
+                        
+                        <div>
+                            <label class="flex items-center">
+                                <input 
+                                    type="checkbox" 
+                                    id="smoking" 
+                                    class="mr-2" 
+                                >
+                                <span>Smoking</span>
+                            </label>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-gray-700 mb-1">Alcohol Consumption (0-20)</label>
+                            <input 
+                                type="range" 
+                                id="alcoholConsumption" 
+                                value="5" 
+                                min="0" 
+                                max="20" 
+                                step="0.1" 
+                                class="w-full" 
+                            >
+                            <div class="flex justify-between text-xs">
+                                <span>Low</span>
+                                <span>Moderate</span>
+                                <span>High</span>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-gray-700 mb-1">Physical Activity (0-10)</label>
+                            <input 
+                                type="range" 
+                                id="physicalActivity" 
+                                value="5" 
+                                min="0" 
+                                max="10" 
+                                step="0.1" 
+                                class="w-full" 
+                            >
+                            <div class="flex justify-between text-xs">
+                                <span>Sedentary</span>
+                                <span>Moderate</span>
+                                <span>Active</span>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-gray-700 mb-1">Diet Quality (0-10)</label>
+                            <input 
+                                type="range" 
+                                id="dietQuality" 
+                                value="5" 
+                                min="0" 
+                                max="10" 
+                                step="0.1" 
+                                class="w-full" 
+                            >
+                            <div class="flex justify-between text-xs">
+                                <span>Poor</span>
+                                <span>Average</span>
+                                <span>Excellent</span>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-gray-700 mb-1">Sleep Quality (4-10)</label>
+                            <input 
+                                type="range" 
+                                id="sleepQuality" 
+                                value="7" 
+                                min="4" 
+                                max="10" 
+                                step="0.1" 
+                                class="w-full" 
+                            >
+                            <div class="flex justify-between text-xs">
+                                <span>Poor</span>
+                                <span>Average</span>
+                                <span>Excellent</span>
+                            </div>
+                        </div>
+                        
+                        <h2 class="font-bold text-lg border-b pb-2 mt-6">Medical History</h2>
+                        
+                        <div class="space-y-2">
+                            <label class="flex items-center">
+                                <input 
+                                    type="checkbox" 
+                                    id="familyHistoryAlzheimers" 
+                                    class="mr-2" 
+                                >
+                                <span>Family History of Alzheimer's</span>
+                            </label>
+                            
+                            <label class="flex items-center">
+                                <input 
+                                    type="checkbox" 
+                                    id="cardiovascularDisease" 
+                                    class="mr-2" 
+                                >
+                                <span>Cardiovascular Disease</span>
+                            </label>
+                            
+                            <label class="flex items-center">
+                                <input 
+                                    type="checkbox" 
+                                    id="diabetes" 
+                                    class="mr-2" 
+                                >
+                                <span>Diabetes</span>
+                            </label>
+                            
+                            <label class="flex items-center">
+                                <input 
+                                    type="checkbox" 
+                                    id="depression" 
+                                    class="mr-2" 
+                                >
+                                <span>Depression</span>
+                            </label>
+                            
+                            <label class="flex items-center">
+                                <input 
+                                    type="checkbox" 
+                                    id="headInjury" 
+                                    class="mr-2" 
+                                >
+                                <span>History of Head Injury</span>
+                            </label>
+                            
+                            <label class="flex items-center">
+                                <input 
+                                    type="checkbox" 
+                                    id="hypertension" 
+                                    class="mr-2" 
+                                >
+                                <span>Hypertension</span>
+                            </label>
+                        </div>
+                        
+                        <h2 class="font-bold text-lg border-b pb-2 mt-6">Cognitive Assessment</h2>
+                        
+                        <div>
+                            <label class="block text-gray-700 mb-1">MMSE Score (0-30)</label>
+                            <input 
+                                type="number" 
+                                id="mmse" 
+                                value="25" 
+                                min="0" 
+                                max="30" 
+                                class="w-full p-2 border rounded" 
+                                required 
+                            >
+                            <p class="text-xs text-gray-500 mt-1">
+                                Mini-Mental State Examination: Higher is better. 24-30 normal, 19-23 mild, 10-18 moderate, 0-9 severe.
+                            </p>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-gray-700 mb-1">Functional Assessment (0-10)</label>
+                            <input 
+                                type="number" 
+                                id="functionalAssessment" 
+                                value="7" 
+                                min="0" 
+                                max="10" 
+                                step="0.1" 
+                                class="w-full p-2 border rounded" 
+                                required 
+                            >
+                        </div>
+                        
+                        <div>
+                            <label class="block text-gray-700 mb-1">Activities of Daily Living (0-10)</label>
+                            <input 
+                                type="number" 
+                                id="adl" 
+                                value="5" 
+                                min="0" 
+                                max="10" 
+                                step="0.1" 
+                                class="w-full p-2 border rounded" 
+                                required 
+                            >
+                        </div>
+                        
+                        <h2 class="font-bold text-lg border-b pb-2 mt-6">Symptoms</h2>
+                        
+                        <div class="space-y-2">
+                            <label class="flex items-center">
+                                <input 
+                                    type="checkbox" 
+                                    id="memoryComplaints" 
+                                    class="mr-2" 
+                                >
+                                <span>Memory Complaints</span>
+                            </label>
+                            
+                            <label class="flex items-center">
+                                <input 
+                                    type="checkbox" 
+                                    id="behavioralProblems" 
+                                    class="mr-2" 
+                                >
+                                <span>Behavioral Problems</span>
+                            </label>
+                            
+                            <label class="flex items-center">
+                                <input 
+                                    type="checkbox" 
+                                    id="confusion" 
+                                    class="mr-2" 
+                                >
+                                <span>Confusion</span>
+                            </label>
+                            
+                            <label class="flex items-center">
+                                <input 
+                                    type="checkbox" 
+                                    id="disorientation" 
+                                    class="mr-2" 
+                                >
+                                <span>Disorientation</span>
+                            </label>
+                            
+                            <label class="flex items-center">
+                                <input 
+                                    type="checkbox" 
+                                    id="personalityChanges" 
+                                    class="mr-2" 
+                                >
+                                <span>Personality Changes</span>
+                            </label>
+                            
+                            <label class="flex items-center">
+                                <input 
+                                    type="checkbox" 
+                                    id="difficultyCompletingTasks" 
+                                    class="mr-2" 
+                                >
+                                <span>Difficulty Completing Tasks</span>
+                            </label>
+                            
+                            <label class="flex items-center">
+                                <input 
+                                    type="checkbox" 
+                                    id="forgetfulness" 
+                                    class="mr-2" 
+                                >
+                                <span>Forgetfulness</span>
+                            </label>
+                        </div>
+                        
+                        <div class="mt-8">
+                            <button 
+                                type="submit" 
+                                class="w-full bg-blue-600 text-white font-bold py-3 px-4 rounded hover:bg-blue-700 transition duration-200"
+                            >
+                                Get Prediction
+                            </button>
+                        </div>
+                    </div>
+                </form>
+                
+                <div id="prediction-result" class="mt-8 p-6 border rounded-lg bg-gray-50 hidden">
+                    <h2 class="text-xl font-bold mb-4">Prediction Result</h2>
+                    
+                    <div class="flex items-center mb-4">
+                        <div id="prediction-text" class="text-2xl font-bold"></div>
+                        <div id="prediction-confidence" class="ml-4 text-gray-600"></div>
+                    </div>
+                    
+                    <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4">
+                        <p class="text-yellow-700">
+                            <strong>Important:</strong> This prediction is for educational purposes only and should not be used for medical diagnosis.
+                            Please consult a healthcare professional for proper evaluation and diagnosis.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Handle file selection
+        document.getElementById('csv-file-input').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            // Display file name
+            document.getElementById('file-name').textContent = file.name;
+            
+            // Update status
+            const statusDiv = document.getElementById('file-upload-status');
+            statusDiv.textContent = 'Reading file...';
+            statusDiv.classList.add('text-blue-600');
+            
+            // Show loading overlay
+            document.getElementById('loading').classList.remove('hidden');
+            document.getElementById('main-content').classList.add('hidden');
+            
+            // Read the file
+            const reader = new FileReader();
+            
+            reader.onload = function(event) {
+                const csvText = event.target.result;
+                statusDiv.textContent = 'Parsing CSV...';
+                
+                // Parse the CSV file
+                Papa.parse(csvText, {
+                    header: true,
+                    dynamicTyping: true,
+                    skipEmptyLines: true,
+                    complete: function(results) {
+                        if (results.errors && results.errors.length > 0) {
+                            statusDiv.textContent = 'Error: ' + results.errors[0].message;
+                            statusDiv.classList.remove('text-blue-600');
+                            statusDiv.classList.add('text-red-600');
+                            return;
+                        }
+                        
+                        statusDiv.textContent = `Successfully loaded ${results.data.length} records. Training model...`;
+                        
+                        // Train the model with the new data
+                        trainModel(results.data);
+                    },
+                    error: function(error) {
+                        statusDiv.textContent = 'Error parsing CSV: ' + error.message;
+                        statusDiv.classList.remove('text-blue-600');
+                        statusDiv.classList.add('text-red-600');
+                    }
+                });
+            };
+            
+            reader.onerror = function() {
+                statusDiv.textContent = 'Error reading file';
+                statusDiv.classList.remove('text-blue-600');
+                statusDiv.classList.add('text-red-600');
+            };
+            
+            reader.readAsText(file);
+        });
+        
+        // Decision Tree implementation
+        class DecisionTree {
+            constructor(maxDepth = 5) {
+                this.maxDepth = maxDepth;
+                this.root = null;
+            }
+
+            fit(X, y) {
+                this.root = this.buildTree(X, y, 0);
+            }
+
+            buildTree(X, y, depth) {
+                // Base cases
+                if (depth >= this.maxDepth || this.allSameClass(y) || X.length === 0) {
+                    return { isLeaf: true, prediction: this.mostCommonClass(y) };
+                }
+
+                // Find best split
+                const { featureIndex, threshold, leftX, leftY, rightX, rightY } = this.findBestSplit(X, y);
+
+                // If no good split found, make a leaf
+                if (featureIndex === null) {
+                    return { isLeaf: true, prediction: this.mostCommonClass(y) };
+                }
+
+                // Recursively build left and right subtrees
+                const leftSubtree = this.buildTree(leftX, leftY, depth + 1);
+                const rightSubtree = this.buildTree(rightX, rightY, depth + 1);
+
+                return {
+                    isLeaf: false,
+                    featureIndex,
+                    threshold,
+                    left: leftSubtree,
+                    right: rightSubtree
+                };
+            }
+
+            findBestSplit(X, y) {
+                let bestGini = 1.0;
+                let bestFeatureIndex = null;
+                let bestThreshold = null;
+                let bestLeftX = [];
+                let bestLeftY = [];
+                let bestRightX = [];
+                let bestRightY = [];
+
+                // Try each feature
+                for (let featureIndex = 0; featureIndex < X[0].length; featureIndex++) {
+                    // Get unique values for this feature
+                    const values = [...new Set(X.map(row => row[featureIndex]))].sort((a, b) => a - b);
+                    
+                    // Try each value as a threshold
+                    for (let i = 0; i < values.length - 1; i++) {
+                        const threshold = (values[i] + values[i + 1]) / 2;
+                        
+                        // Split data
+                        const { leftX, leftY, rightX, rightY } = this.splitData(X, y, featureIndex, threshold);
+
+                        // Skip if split is trivial
+                        if (leftY.length === 0 || rightY.length === 0) continue;
+
+                        // Calculate gini impurity
+                        const leftRatio = leftY.length / y.length;
+                        const rightRatio = rightY.length / y.length;
+                        const leftGini = this.giniImpurity(leftY);
+                        const rightGini = this.giniImpurity(rightY);
+                        const weightedGini = leftRatio * leftGini + rightRatio * rightGini;
+
+                        // Update if better split found
+                        if (weightedGini < bestGini) {
+                            bestGini = weightedGini;
+                            bestFeatureIndex = featureIndex;
+                            bestThreshold = threshold;
+                            bestLeftX = leftX;
+                            bestLeftY = leftY;
+                            bestRightX = rightX;
+                            bestRightY = rightY;
+                        }
+                    }
+                }
+
+                return {
+                    featureIndex: bestFeatureIndex,
+                    threshold: bestThreshold,
+                    leftX: bestLeftX,
+                    leftY: bestLeftY,
+                    rightX: bestRightX,
+                    rightY: bestRightY
+                };
+            }
+
+            splitData(X, y, featureIndex, threshold) {
+                const leftX = [];
+                const leftY = [];
+                const rightX = [];
+                const rightY = [];
+
+                for (let i = 0; i < X.length; i++) {
+                    if (X[i][featureIndex] <= threshold) {
+                        leftX.push(X[i]);
+                        leftY.push(y[i]);
+                    } else {
+                        rightX.push(X[i]);
+                        rightY.push(y[i]);
+                    }
+                }
+
+                return { leftX, leftY, rightX, rightY };
+            }
+
+            giniImpurity(y) {
+                const counts = {};
+                for (const label of y) {
+                    counts[label] = (counts[label] || 0) + 1;
+                }
+
+                let impurity = 1;
+                for (const label in counts) {
+                    const prob = counts[label] / y.length;
+                    impurity -= prob * prob;
+                }
+
+                return impurity;
+            }
+
+            allSameClass(y) {
+                return new Set(y).size === 1;
+            }
+
+            mostCommonClass(y) {
+                const counts = {};
+                for (const label of y) {
+                    counts[label] = (counts[label] || 0) + 1;
+                }
+
+                let maxCount = 0;
+                let maxClass = null;
+                for (const label in counts) {
+                    if (counts[label] > maxCount) {
+                        maxCount = counts[label];
+                        maxClass = Number(label);
+                    }
+                }
+
+                return maxClass;
+            }
+
+            predict(sample) {
+                return this.predictSample(this.root, sample);
+            }
+
+            predictSample(node, sample) {
+                if (node.isLeaf) {
+                    return node.prediction;
+                }
+
+                if (sample[node.featureIndex] <= node.threshold) {
+                    return this.predictSample(node.left, sample);
+                } else {
+                    return this.predictSample(node.right, sample);
+                }
+            }
+        }
+
+        class RandomForest {
+            constructor(nEstimators = 10, maxDepth = 5) {
+                this.nEstimators = nEstimators;
+                this.maxDepth = maxDepth;
+                this.trees = [];
+            }
+
+            fit(X, y) {
+                this.trees = [];
+                for (let i = 0; i < this.nEstimators; i++) {
+                    // Bootstrap sample
+                    const { sampleX, sampleY } = this.bootstrapSample(X, y);
+                    
+                    // Train tree on bootstrap sample
+                    const tree = new DecisionTree(this.maxDepth);
+                    tree.fit(sampleX, sampleY);
+                    this.trees.push(tree);
+                }
+            }
+
+            bootstrapSample(X, y) {
+                const sampleX = [];
+                const sampleY = [];
+                
+                for (let i = 0; i < X.length; i++) {
+                    const idx = Math.floor(Math.random() * X.length);
+                    sampleX.push(X[idx]);
+                    sampleY.push(y[idx]);
+                }
+                
+                return { sampleX, sampleY };
+            }
+
+            predict(sample) {
+                // Get predictions from all trees
+                const predictions = this.trees.map(tree => tree.predict(sample));
+                
+                // Majority vote
+                const counts = {};
+                for (const pred of predictions) {
+                    counts[pred] = (counts[pred] || 0) + 1;
+                }
+                
+                let maxCount = 0;
+                let maxClass = null;
+                for (const pred in counts) {
+                    if (counts[pred] > maxCount) {
+                        maxCount = counts[pred];
+                        maxClass = Number(pred);
+                    }
+                }
+                
+                return maxClass;
+            }
+
+            predictProba(sample) {
+                // Get predictions from all trees
+                const predictions = this.trees.map(tree => tree.predict(sample));
+                
+                // Count classes
+                const counts = {};
+                for (const pred of predictions) {
+                    counts[pred] = (counts[pred] || 0) + 1;
+                }
+                
+                // Calculate probabilities
+                const probas = {};
+                for (const pred in counts) {
+                    probas[pred] = counts[pred] / this.nEstimators;
+                }
+                
+                return probas;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Global variable for the trained model
+            let model = null;
+            
+            // Initialize by loading and training the model
+            async function init() {
+                try {
+                    // Try to fetch the default CSV file
+                    const response = await fetch('alzheimers_disease_data.csv');
+                    if (!response.ok) {
+                        console.log('Default CSV file not found, using sample data instead');
+                        // If file not found, use sample data and show file upload option
+                        document.getElementById('file-upload-container').classList.remove('hidden');
+                        useSampleData();
+                        return;
+                    }
+                    
+                    const csvText = await response.text();
+                    
+                    // Parse the CSV data
+                    Papa.parse(csvText, {
+                        header: true,
+                        dynamicTyping: true,
+                        skipEmptyLines: true,
+                        complete: function(results) {
+                            if (results.errors && results.errors.length > 0) {
+                                console.error('Error parsing CSV:', results.errors);
+                                document.getElementById('file-upload-container').classList.remove('hidden');
+                                useSampleData();
+                                return;
+                            }
+                            
+                            const data = results.data;
+                            console.log(`Loaded ${data.length} records from default CSV file`);
+                            trainModel(data);
+                            
+                            // Still show file upload option for users who want to use their own data
+                            document.getElementById('file-upload-container').classList.remove('hidden');
+                        },
+                        error: function(error) {
+                            console.error('Error parsing CSV:', error);
+                            document.getElementById('file-upload-container').classList.remove('hidden');
+                            useSampleData();
+                        }
+                    });
+                } catch (error) {
+                    console.error('Error loading default CSV file:', error);
+                    document.getElementById('file-upload-container').classList.remove('hidden');
+                    useSampleData();
+                }
+            }
+            
+            // Use sample data if no CSV file is available
+            function useSampleData() {
+                console.log('Using sample data');
+                // Sample data including both positive and negative diagnosis cases
+                const sampleData = [
+                    {PatientID: 4751, Age: 73, Gender: 0, Ethnicity: 0, EducationLevel: 2, BMI: 22.9, Smoking: 0, AlcoholConsumption: 13.3, PhysicalActivity: 6.3, DietQuality: 1.3, SleepQuality: 9.0, FamilyHistoryAlzheimers: 0, CardiovascularDisease: 0, Diabetes: 1, Depression: 1, HeadInjury: 0, Hypertension: 0, SystolicBP: 142, DiastolicBP: 72, CholesterolTotal: 242.4, CholesterolLDL: 56.2, CholesterolHDL: 33.7, CholesterolTriglycerides: 162.2, MMSE: 21.5, FunctionalAssessment: 6.5, MemoryComplaints: 0, BehavioralProblems: 0, ADL: 1.7, Confusion: 0, Disorientation: 0, PersonalityChanges: 0, DifficultyCompletingTasks: 1, Forgetfulness: 0, Diagnosis: 0},
+                    {PatientID: 4752, Age: 89, Gender: 0, Ethnicity: 0, EducationLevel: 0, BMI: 26.8, Smoking: 0, AlcoholConsumption: 4.5, PhysicalActivity: 7.6, DietQuality: 0.5, SleepQuality: 7.2, FamilyHistoryAlzheimers: 0, CardiovascularDisease: 0, Diabetes: 0, Depression: 0, HeadInjury: 0, Hypertension: 0, SystolicBP: 115, DiastolicBP: 64, CholesterolTotal: 231.2, CholesterolLDL: 193.4, CholesterolHDL: 79.0, CholesterolTriglycerides: 294.6, MMSE: 20.6, FunctionalAssessment: 7.1, MemoryComplaints: 0, BehavioralProblems: 0, ADL: 2.6, Confusion: 0, Disorientation: 0, PersonalityChanges: 0, DifficultyCompletingTasks: 0, Forgetfulness: 1, Diagnosis: 0},
+                    {PatientID: 4753, Age: 73, Gender: 0, Ethnicity: 3, EducationLevel: 1, BMI: 17.8, Smoking: 0, AlcoholConsumption: 19.6, PhysicalActivity: 7.8, DietQuality: 1.8, SleepQuality: 9.7, FamilyHistoryAlzheimers: 1, CardiovascularDisease: 0, Diabetes: 0, Depression: 0, HeadInjury: 0, Hypertension: 0, SystolicBP: 99, DiastolicBP: 116, CholesterolTotal: 284.2, CholesterolLDL: 153.3, CholesterolHDL: 69.8, CholesterolTriglycerides: 83.6, MMSE: 7.4, FunctionalAssessment: 5.9, MemoryComplaints: 0, BehavioralProblems: 0, ADL: 7.1, Confusion: 0, Disorientation: 1, PersonalityChanges: 0, DifficultyCompletingTasks: 1, Forgetfulness: 0, Diagnosis: 0},
+                    {PatientID: 4754, Age: 66, Gender: 1, Ethnicity: 0, EducationLevel: 1, BMI: 29.4, Smoking: 0, AlcoholConsumption: 16.3, PhysicalActivity: 2.8, DietQuality: 2.2, SleepQuality: 6.0, FamilyHistoryAlzheimers: 0, CardiovascularDisease: 0, Diabetes: 0, Depression: 0, HeadInjury: 0, Hypertension: 0, SystolicBP: 107, DiastolicBP: 86, CholesterolTotal: 202.9, CholesterolLDL: 196.1, CholesterolHDL: 58.6, CholesterolTriglycerides: 219.2, MMSE: 14.5, FunctionalAssessment: 5.5, MemoryComplaints: 0, BehavioralProblems: 0, ADL: 2.2, Confusion: 0, Disorientation: 0, PersonalityChanges: 0, DifficultyCompletingTasks: 0, Forgetfulness: 0, Diagnosis: 0},
+                    {PatientID: 4755, Age: 69, Gender: 1, Ethnicity: 0, EducationLevel: 2, BMI: 18.9, Smoking: 0, AlcoholConsumption: 15.1, PhysicalActivity: 0.7, DietQuality: 9.0, SleepQuality: 7.5, FamilyHistoryAlzheimers: 0, CardiovascularDisease: 1, Diabetes: 0, Depression: 0, HeadInjury: 0, Hypertension: 0, SystolicBP: 147, DiastolicBP: 77, CholesterolTotal: 262.7, CholesterolLDL: 165.2, CholesterolHDL: 52.3, CholesterolTriglycerides: 159.5, MMSE: 13.9, FunctionalAssessment: 3.3, MemoryComplaints: 0, BehavioralProblems: 0, ADL: 5.7, Confusion: 0, Disorientation: 0, PersonalityChanges: 1, DifficultyCompletingTasks: 0, Forgetfulness: 0, Diagnosis: 0},
+                    {PatientID: 4756, Age: 78, Gender: 1, Ethnicity: 1, EducationLevel: 3, BMI: 31.2, Smoking: 1, AlcoholConsumption: 3.2, PhysicalActivity: 3.5, DietQuality: 7.1, SleepQuality: 4.8, FamilyHistoryAlzheimers: 1, CardiovascularDisease: 1, Diabetes: 1, Depression: 0, HeadInjury: 0, Hypertension: 1, SystolicBP: 162, DiastolicBP: 98, CholesterolTotal: 275.6, CholesterolLDL: 178.9, CholesterolHDL: 38.2, CholesterolTriglycerides: 312.4, MMSE: 9.2, FunctionalAssessment: 3.8, MemoryComplaints: 1, BehavioralProblems: 1, ADL: 6.4, Confusion: 1, Disorientation: 1, PersonalityChanges: 1, DifficultyCompletingTasks: 1, Forgetfulness: 1, Diagnosis: 1},
+                    {PatientID: 4757, Age: 83, Gender: 0, Ethnicity: 2, EducationLevel: 1, BMI: 23.5, Smoking: 0, AlcoholConsumption: 1.1, PhysicalActivity: 1.2, DietQuality: 6.8, SleepQuality: 5.5, FamilyHistoryAlzheimers: 1, CardiovascularDisease: 0, Diabetes: 0, Depression: 1, HeadInjury: 1, Hypertension: 1, SystolicBP: 158, DiastolicBP: 92, CholesterolTotal: 241.2, CholesterolLDL: 163.4, CholesterolHDL: 42.1, CholesterolTriglycerides: 198.7, MMSE: 12.7, FunctionalAssessment: 4.2, MemoryComplaints: 1, BehavioralProblems: 0, ADL: 5.9, Confusion: 1, Disorientation: 1, PersonalityChanges: 0, DifficultyCompletingTasks: 1, Forgetfulness: 1, Diagnosis: 1},
+                    {PatientID: 4758, Age: 63, Gender: 1, Ethnicity: 0, EducationLevel: 2, BMI: 27.8, Smoking: 1, AlcoholConsumption: 8.4, PhysicalActivity: 5.6, DietQuality: 4.9, SleepQuality: 6.1, FamilyHistoryAlzheimers: 0, CardiovascularDisease: 0, Diabetes: 0, Depression: 0, HeadInjury: 0, Hypertension: 0, SystolicBP: 125, DiastolicBP: 78, CholesterolTotal: 198.5, CholesterolLDL: 121.3, CholesterolHDL: 51.4, CholesterolTriglycerides: 142.8, MMSE: 27.8, FunctionalAssessment: 8.9, MemoryComplaints: 0, BehavioralProblems: 0, ADL: 1.2, Confusion: 0, Disorientation: 0, PersonalityChanges: 0, DifficultyCompletingTasks: 0, Forgetfulness: 0, Diagnosis: 0},
+                    {PatientID: 4759, Age: 71, Gender: 0, Ethnicity: 1, EducationLevel: 0, BMI: 35.6, Smoking: 0, AlcoholConsumption: 0.3, PhysicalActivity: 1.7, DietQuality: 3.5, SleepQuality: 6.8, FamilyHistoryAlzheimers: 0, CardiovascularDisease: 1, Diabetes: 1, Depression: 1, HeadInjury: 0, Hypertension: 1, SystolicBP: 172, DiastolicBP: 105, CholesterolTotal: 289.3, CholesterolLDL: 192.7, CholesterolHDL: 32.8, CholesterolTriglycerides: 345.9, MMSE: 18.4, FunctionalAssessment: 5.6, MemoryComplaints: 1, BehavioralProblems: 0, ADL: 4.3, Confusion: 0, Disorientation: 0, PersonalityChanges: 0, DifficultyCompletingTasks: 1, Forgetfulness: 1, Diagnosis: 1},
+                    {PatientID: 4760, Age: 68, Gender: 1, Ethnicity: 3, EducationLevel: 3, BMI: 22.1, Smoking: 0, AlcoholConsumption: 6.7, PhysicalActivity: 8.9, DietQuality: 8.7, SleepQuality: 8.2, FamilyHistoryAlzheimers: 0, CardiovascularDisease: 0, Diabetes: 0, Depression: 0, HeadInjury: 0, Hypertension: 0, SystolicBP: 118, DiastolicBP: 72, CholesterolTotal: 175.3, CholesterolLDL: 102.8, CholesterolHDL: 68.9, CholesterolTriglycerides: 121.4, MMSE: 29.1, FunctionalAssessment: 9.7, MemoryComplaints: 0, BehavioralProblems: 0, ADL: 0.8, Confusion: 0, Disorientation: 0, PersonalityChanges: 0, DifficultyCompletingTasks: 0, Forgetfulness: 0, Diagnosis: 0}
+                ];
+                
+                trainModel(sampleData);
+            }
+            
+            // Train the random forest model
+            function trainModel(data) {
+                // Filter out rows with missing values or invalid data
+                const validData = data.filter(row => {
+                    // Check that all necessary fields exist and are valid numbers
+                    return row !== null && 
+                           typeof row === 'object' &&
+                           !isNaN(row.Age) && 
+                           !isNaN(row.Gender) &&
+                           !isNaN(row.Ethnicity) &&
+                           !isNaN(row.EducationLevel) &&
+                           !isNaN(row.BMI) &&
+                           !isNaN(row.Smoking) &&
+                           !isNaN(row.Diagnosis);
+                });
+                
+                console.log(`Using ${validData.length} valid records for training`);
+                
+                if (validData.length === 0) {
+                    document.getElementById('loading').innerHTML = `
+                        <div class="text-center p-8 max-w-lg">
+                            <h1 class="text-2xl font-bold mb-4 text-red-600">Error Training Model</h1>
+                            <p class="mb-4">No valid data found in the CSV file.</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                // Prepare data for training
+                const X = validData.map(row => [
+                    Number(row.Age) || 0,
+                    Number(row.Gender) || 0,
+                    Number(row.Ethnicity) || 0,
+                    Number(row.EducationLevel) || 0,
+                    Number(row.BMI) || 0,
+                    Number(row.Smoking) || 0,
+                    Number(row.AlcoholConsumption) || 0,
+                    Number(row.PhysicalActivity) || 0,
+                    Number(row.DietQuality) || 0,
+                    Number(row.SleepQuality) || 0,
+                    Number(row.FamilyHistoryAlzheimers) || 0,
+                    Number(row.CardiovascularDisease) || 0,
+                    Number(row.Diabetes) || 0,
+                    Number(row.Depression) || 0,
+                    Number(row.HeadInjury) || 0,
+                    Number(row.Hypertension) || 0,
+                    Number(row.SystolicBP) || 0,
+                    Number(row.DiastolicBP) || 0,
+                    Number(row.CholesterolTotal) || 0,
+                    Number(row.CholesterolLDL) || 0,
+                    Number(row.CholesterolHDL) || 0,
+                    Number(row.CholesterolTriglycerides) || 0,
+                    Number(row.MMSE) || 0,
+                    Number(row.FunctionalAssessment) || 0,
+                    Number(row.MemoryComplaints) || 0,
+                    Number(row.BehavioralProblems) || 0,
+                    Number(row.ADL) || 0,
+                    Number(row.Confusion) || 0,
+                    Number(row.Disorientation) || 0,
+                    Number(row.PersonalityChanges) || 0,
+                    Number(row.DifficultyCompletingTasks) || 0,
+                    Number(row.Forgetfulness) || 0
+                ]);
+                const y = data.map(row => row.Diagnosis);
+
+                try {
+                    // Create and train random forest
+                    // Using more trees (20) and deeper trees (8) for better accuracy
+                    const forest = new RandomForest(20, 8);
+                    forest.fit(X, y);
+                    
+                    // Store the trained model globally
+                    model = forest;
+                    
+                    console.log("Random Forest model trained successfully");
+                } catch (error) {
+                    console.error("Error training model:", error);
+                    document.getElementById('loading').innerHTML = `
+                        <div class="text-center p-8 max-w-lg">
+                            <h1 class="text-2xl font-bold mb-4 text-red-600">Error Training Model</h1>
+                            <p class="mb-4">${error.message}</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                // Hide loading, show content
+                document.getElementById('loading').classList.add('hidden');
+                document.getElementById('main-content').classList.remove('hidden');
+            }
+            
+            // Handle form submission
+            document.getElementById('prediction-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                if (!model) {
+                    alert('Model is not trained yet. Please wait.');
+                    return;
+                }
+                
+                // Get form values
+                const formData = {
+                    age: Number(document.getElementById('age').value),
+                    gender: Number(document.getElementById('gender').value),
+                    ethnicity: Number(document.getElementById('ethnicity').value),
+                    educationLevel: Number(document.getElementById('educationLevel').value),
+                    bmi: Number(document.getElementById('bmi').value),
+                    smoking: document.getElementById('smoking').checked ? 1 : 0,
+                    alcoholConsumption: Number(document.getElementById('alcoholConsumption').value),
+                    physicalActivity: Number(document.getElementById('physicalActivity').value),
+                    dietQuality: Number(document.getElementById('dietQuality').value),
+                    sleepQuality: Number(document.getElementById('sleepQuality').value),
+                    familyHistoryAlzheimers: document.getElementById('familyHistoryAlzheimers').checked ? 1 : 0,
+                    cardiovascularDisease: document.getElementById('cardiovascularDisease').checked ? 1 : 0,
+                    diabetes: document.getElementById('diabetes').checked ? 1 : 0,
+                    depression: document.getElementById('depression').checked ? 1 : 0,
+                    headInjury: document.getElementById('headInjury').checked ? 1 : 0,
+                    hypertension: document.getElementById('hypertension').checked ? 1 : 0,
+                    systolicBP: Number(document.getElementById('systolicBP').value),
+                    diastolicBP: Number(document.getElementById('diastolicBP').value),
+                    cholesterolTotal: Number(document.getElementById('cholesterolTotal').value),
+                    cholesterolLDL: Number(document.getElementById('cholesterolLDL').value),
+                    cholesterolHDL: Number(document.getElementById('cholesterolHDL').value),
+                    cholesterolTriglycerides: Number(document.getElementById('cholesterolTriglycerides').value),
+                    mmse: Number(document.getElementById('mmse').value),
+                    functionalAssessment: Number(document.getElementById('functionalAssessment').value),
+                    memoryComplaints: document.getElementById('memoryComplaints').checked ? 1 : 0,
+                    behavioralProblems: document.getElementById('behavioralProblems').checked ? 1 : 0,
+                    adl: Number(document.getElementById('adl').value),
+                    confusion: document.getElementById('confusion').checked ? 1 : 0,
+                    disorientation: document.getElementById('disorientation').checked ? 1 : 0,
+                    personalityChanges: document.getElementById('personalityChanges').checked ? 1 : 0,
+                    difficultyCompletingTasks: document.getElementById('difficultyCompletingTasks').checked ? 1 : 0,
+                    forgetfulness: document.getElementById('forgetfulness').checked ? 1 : 0
+                };
+                
+                // Prepare sample for prediction
+                const sample = [
+                    formData.age,
+                    formData.gender,
+                    formData.ethnicity,
+                    formData.educationLevel,
+                    formData.bmi,
+                    formData.smoking,
+                    formData.alcoholConsumption,
+                    formData.physicalActivity,
+                    formData.dietQuality,
+                    formData.sleepQuality,
+                    formData.familyHistoryAlzheimers,
+                    formData.cardiovascularDisease,
+                    formData.diabetes,
+                    formData.depression,
+                    formData.headInjury,
+                    formData.hypertension,
+                    formData.systolicBP,
+                    formData.diastolicBP,
+                    formData.cholesterolTotal,
+                    formData.cholesterolLDL,
+                    formData.cholesterolHDL,
+                    formData.cholesterolTriglycerides,
+                    formData.mmse,
+                    formData.functionalAssessment,
+                    formData.memoryComplaints,
+                    formData.behavioralProblems,
+                    formData.adl,
+                    formData.confusion,
+                    formData.disorientation,
+                    formData.personalityChanges,
+                    formData.difficultyCompletingTasks,
+                    formData.forgetfulness
+                ];
+                
+                // Make prediction
+                const prediction = model.predict(sample);
+                
+                // Get prediction probabilities
+                const probas = model.predictProba(sample);
+                
+                // Display results
+                displayPrediction(prediction, probas);
+            });
+            
+            // Display the prediction results
+            function displayPrediction(prediction, probas) {
+                const resultDiv = document.getElementById('prediction-result');
+                const predictionText = document.getElementById('prediction-text');
+                const predictionConfidence = document.getElementById('prediction-confidence');
+                
+                // Set prediction text and color
+                if (prediction === 0) {
+                    predictionText.textContent = 'No Alzheimer\'s Disease';
+                    predictionText.className = 'text-2xl font-bold text-green-600';
+                    predictionConfidence.textContent = `Confidence: ${Math.round((probas[0] || 0) * 100)}%`;
+                } else {
+                    predictionText.textContent = 'Alzheimer\'s Disease';
+                    predictionText.className = 'text-2xl font-bold text-red-600';
+                    predictionConfidence.textContent = `Confidence: ${Math.round((probas[1] || 0) * 100)}%`;
+                }
+                
+                // Show the result
+                resultDiv.classList.remove('hidden');
+                
+                // Scroll to results
+                resultDiv.scrollIntoView({ behavior: 'smooth' });
+            }
+            
+            // Start initialization
+            init();
+        });
+    </script>
+</body>
+</html>
